@@ -6,5 +6,3 @@ def extract_text_from_pdf(pdf_path):
         for page in pdf.pages:
             text += page.extract_text()
     return text
-
-pdf_text = extract_text_from_pdf('./sample_resume.pdf')
