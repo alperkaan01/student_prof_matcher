@@ -1,3 +1,6 @@
 langchain==0.2.14
 beautifulsoup4 == 4.12.3
 pdfplumber==0.11.4
+asyncio == 3.4.3
+playwright == 1.46.0
+pprintpp == 0.4.0
