@@ -13,6 +13,7 @@ async def ascrape_playwright(url):
     """
     print("Started scraping...")
     results = []
+    university_database = {}
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
 
@@ -37,9 +38,21 @@ async def ascrape_playwright(url):
             
             
             for i in range(0, len(rows), 3):
-                print(rows[i])
-                print(i)
-                print('\n')
+                # Process every third row
+                row = rows[i]
+
+                # Find the <span> tag that contains the university name
+                university_span = row.find_all('span', onclick=lambda x: x and 'csr.toggleFaculty' in x)
+                
+                if len(university_span) > 1:
+                    university_name = university_span[1].get_text(strip=True)
+                    
+                    if(university_name not in university_database):
+                        university_database[university_name] = []
+                
+        
+            print(university_database)
+
 
 
         except Exception as e:
