@@ -50,8 +50,11 @@ async def ascrape_playwright(url):
                     if(university_name not in university_database):
                         university_database[university_name] = []
                 
+
+            for i in range(len(rows)):
+                print(i)
         
-            print(university_database)
+            
 
 
 
