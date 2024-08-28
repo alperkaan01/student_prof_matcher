@@ -11,6 +11,7 @@ from langchain_openai import ChatOpenAI
 from langchain.chains import create_extraction_chain
 
 
+
 def scrape_prof_websites():
 
     try:
@@ -20,6 +21,7 @@ def scrape_prof_websites():
         # Retrieve environment variables
         data_path = os.getenv('DATA_PATH')
         user_agent = os.getenv('USER_AGENT')
+        openai_api_key = os.getenv('OPENAI_API_KEY')
 
         with open(data_path, 'r', encoding='utf-8') as f:
             print("Loading Data ...")
@@ -30,7 +32,7 @@ def scrape_prof_websites():
         #print(data)
         
         #define the llm
-        llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-0613")
+        llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-0613", openai_api_key=openai_api_key)
 
         for k,v in data.items():
             university_name = k
