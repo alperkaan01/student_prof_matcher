@@ -1,0 +1,1 @@
+#create a schema for langchain extraction chain
