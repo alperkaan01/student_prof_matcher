@@ -7,6 +7,9 @@ import json
 from langchain_community.document_loaders import AsyncChromiumLoader
 from langchain_community.document_transformers import BeautifulSoupTransformer
 
+from langchain_openai import ChatOpenAI
+from langchain.chains import create_extraction_chain
+
 
 def scrape_prof_websites():
 
@@ -26,6 +29,8 @@ def scrape_prof_websites():
                 # Print the loaded data or process it as needed
         #print(data)
         
+        #define the llm
+        llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-0613")
 
         for k,v in data.items():
             university_name = k
