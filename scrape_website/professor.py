@@ -1,5 +1,4 @@
 #struct with prof properties
-
 class Professor:
 
     def __init__(self, name = "", area = "", url = ""):

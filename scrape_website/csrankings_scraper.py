@@ -6,6 +6,8 @@ import pprint
 from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright
 
+import json
+
 from professor import Professor
 
 async def ascrape_playwright(url):
@@ -94,6 +96,10 @@ async def ascrape_playwright(url):
             
 
             results = university_database
+
+
+            with open('scrape_results.json', 'w', encoding='utf-8') as f:
+                json.dump(results, f, ensure_ascii=False, indent=4, default=lambda o: o.__dict__)
 
         except Exception as e:
             results = f"Error: {e}"
