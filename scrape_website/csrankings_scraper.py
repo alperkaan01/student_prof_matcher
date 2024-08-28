@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright
 
 import json
+import os
 
 from professor import Professor
 
@@ -98,8 +99,23 @@ async def ascrape_playwright(url):
             results = university_database
 
 
-            with open('scrape_results.json', 'w', encoding='utf-8') as f:
+            # Determine the parent directory
+            parent_directory = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+
+            # Print the parent directory for debugging
+            print(f"Parent Directory: {parent_directory}")
+
+            # Construct the file path for saving the JSON file in the parent directory
+            json_file_path = os.path.join(parent_directory, 'scrape_results.json')
+
+            # Print the file path for debugging
+            print(f"JSON file path: {json_file_path}")
+
+            # Save the results to the JSON file
+            with open(json_file_path, 'w', encoding='utf-8') as f:
                 json.dump(results, f, ensure_ascii=False, indent=4, default=lambda o: o.__dict__)
+
+            print("JSON file successfully saved.")
 
         except Exception as e:
             results = f"Error: {e}"
