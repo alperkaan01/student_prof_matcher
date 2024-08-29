@@ -1,19 +1,22 @@
-# LLM Based matcher implemented by langchain
 import os
 from dotenv import load_dotenv
 
 import json
+from tqdm import tqdm
 
 from langchain_community.document_loaders import AsyncChromiumLoader
 from langchain_community.document_transformers import BeautifulSoupTransformer
 
 from langchain_openai import ChatOpenAI
-from langchain.chains import create_extraction_chain
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain.llms import huggingface_hub
+
+from schema.schema import ProfProfile
+from extract import extract
 
 
 
 def scrape_prof_websites():
-
     try:
         # Load environment variables from the .env file
         load_dotenv()
@@ -28,45 +31,46 @@ def scrape_prof_websites():
             data = json.load(f)
         
         print("JSON data loaded successfully.")
-                # Print the loaded data or process it as needed
-        #print(data)
-        
-        #define the llm
-        llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-0613", openai_api_key=openai_api_key)
 
-        for k,v in data.items():
+        # Define the llm
+        llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-0125", openai_api_key=openai_api_key)
+
+        # llm = huggingface_hub(repo_id="meta-llama/Meta-Llama-3.1-70B-Instruct")
+
+
+
+        for k, v in data.items():
             university_name = k
+            print(f"Extraction is started for {university_name}")
 
-            for prof in v:
+            # Add tqdm for progress tracking
+            for prof in tqdm(v, desc=f"Processing professors for {university_name}"):
                 name = prof['name']
                 research_area = prof['area']
                 url = prof['url']
 
-                print(url)
-            
                 loader = AsyncChromiumLoader([url], user_agent=user_agent)
                 html = loader.load()
 
                 bs_transformer = BeautifulSoupTransformer()
                 docs_transformed = bs_transformer.transform_documents(html, tags_to_extract=["li", "a", "span", "div", "h1", "h2", "h3"])
 
-                extracted_data = docs_transformed[0].page_content[0:16000]
+                # print(f"Data is extracted for the professor {name}")
+                extracted_data = docs_transformed[0].page_content[0:4000]
 
-                print(extracted_data)
+                extracted_content = extract(content=extracted_data, schema_pydantic=ProfProfile, llm= llm)
+                pprint.pprint(extracted_content)
 
-                break
+                break  # This is just for testing; remove this in production.
 
-            break
-
-
-
-
-
+            break  # This is just for testing; remove this in production.
 
     except Exception as e:
-            results = f"Error: {e}"
+        results = f"Error: {e}"
+        print(results)
 
     return 0
 
 if __name__ == "__main__":
+
     scrape_prof_websites()
